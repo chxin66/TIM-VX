@@ -47,9 +47,13 @@ namespace ops {
 
 class DepthToSpace : public DirectMapOp {
  public:
+  enum depth2space_mode {
+    CRD_mode = 0,
+    DCR_mode = 1,
+  };
   DepthToSpace(Graph* Graph, int block_size,
                DataLayout layout = DataLayout::WHCN);
-  DepthToSpace(Graph* Graph, int block_size, vsi_nn_depth2space_mode_e mode_,
+  DepthToSpace(Graph* Graph, int block_size, depth2space_mode mode,
                DataLayout layout = DataLayout::WHCN);
 
   std::shared_ptr<Operation> Clone(
@@ -57,7 +61,7 @@ class DepthToSpace : public DirectMapOp {
 
  protected:
   int block_size_;
-  vsi_nn_depth2space_mode_e mode_;
+  depth2space_mode mode_;
 };
 
 }  // namespace ops
