@@ -49,11 +49,15 @@ class DepthToSpace : public DirectMapOp {
  public:
   DepthToSpace(Graph* Graph, int block_size,
                DataLayout layout = DataLayout::WHCN);
+  DepthToSpace(Graph* Graph, int block_size, vsi_nn_depth2space_mode_e mode_,
+               DataLayout layout = DataLayout::WHCN);
 
-  std::shared_ptr<Operation> Clone(std::shared_ptr<Graph>& graph) const override;
+  std::shared_ptr<Operation> Clone(
+      std::shared_ptr<Graph>& graph) const override;
 
  protected:
   int block_size_;
+  vsi_nn_depth2space_mode_e mode_;
 };
 
 }  // namespace ops
