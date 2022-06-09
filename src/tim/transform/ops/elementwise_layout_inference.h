@@ -42,7 +42,19 @@ class ElementWiseLayoutInfer : public OpLayoutInfer {
 
   void OnInputs(
       std::vector<std::shared_ptr<vx::Tensor>>& next_tensors) override {
-    auto required_pv = AlignPermuteVectorForElementWise();
+    auto input_tensors = op_->impl()->InputsTensor();
+    tim::transform::IPermuteVectorPtr required_pv;
+    if (input_tensors[0]->GetShape().size() !=
+        input_tensors[1]->GetShape().size()) {
+      ReverseInputsPermuteVector();
+      auto size = input_tensors[0]->GetShape().size() >
+                          input_tensors[1]->GetShape().size()
+                      ? input_tensors[0]->GetShape().size()
+                      : input_tensors[1]->GetShape().size();
+      required_pv = MakeShared(size);
+    } else {
+      required_pv = AlignPermuteVectorForElementWise();
+    }
     auto elementwise = context_->infer_graph_->CreateOperation<OpType>();
     for (const auto& i_src : op_->impl()->InputsTensor()) {
       (*elementwise).BindInput(context_->GetMapedTensor(i_src));
