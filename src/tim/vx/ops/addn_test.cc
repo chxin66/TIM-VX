@@ -29,43 +29,6 @@
 
 #include "gtest/gtest.h"
 
-TEST(AddN, shape_2_2_int32) {
-    auto ctx = tim::vx::Context::Create();
-    auto graph = ctx->CreateGraph();
-
-    tim::vx::ShapeType io_shape({2, 2});
-    tim::vx::TensorSpec input_spec(tim::vx::DataType::INT32,
-                            io_shape, tim::vx::TensorAttribute::INPUT);
-    tim::vx::TensorSpec output_spec(tim::vx::DataType::INT32,
-                            io_shape, tim::vx::TensorAttribute::OUTPUT);
-
-    auto input_tensor_x = graph->CreateTensor(input_spec);
-    auto input_tensor_y = graph->CreateTensor(input_spec);
-    auto output_tensor = graph->CreateTensor(output_spec);
-
-    std::vector<int32_t> in_data_x = {
-        3, 5,
-        4, 8 };
-    std::vector<int32_t> in_data_y = {
-        1, 6,
-        2, 9 };
-    std::vector<int32_t> golden = {
-        4, 11,
-        6, 17 };  //correct answer
-
-    EXPECT_TRUE(input_tensor_x->CopyDataToTensor(in_data_x.data(), in_data_x.size()*4));
-    EXPECT_TRUE(input_tensor_y->CopyDataToTensor(in_data_y.data(), in_data_y.size()*4));
-    auto op = graph->CreateOperation<tim::vx::ops::AddN>(2);   //To refer to the AddN function definition to give the parameters
-    (*op).BindInputs({input_tensor_x, input_tensor_y}).BindOutputs({output_tensor});
-
-    EXPECT_TRUE(graph->Compile());
-    EXPECT_TRUE(graph->Run());
-    std::vector<int32_t> output(4);
-
-    EXPECT_TRUE(output_tensor->CopyDataFromTensor(output.data()));
-    EXPECT_EQ(golden, output);
-}
-
 TEST(AddN, shape_3_1_float32) {
     auto ctx = tim::vx::Context::Create();
     auto graph = ctx->CreateGraph();
