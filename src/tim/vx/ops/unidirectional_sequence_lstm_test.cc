@@ -49,6 +49,9 @@ std::shared_ptr<tim::vx::Tensor> make_empty_tensor(
 
 TEST(LSTM_CELL, shape_in_2_cell_4_out_4_float32) {
     // NoCifg_NoPeephole_NoProjection_NoLayerNorm
+    std::cout << "This case will run on SW, only indicate how to use "
+                 "unidirectional lstm"
+              << std::endl;
     auto ctx = tim::vx::Context::Create();
     auto g = ctx->CreateGraph();
 
@@ -157,8 +160,8 @@ TEST(LSTM_CELL, shape_in_2_cell_4_out_4_float32) {
             input2output_weights_tensor,
 
             r2i_weight_tensor,
-            r2c_weight_tensor,
             r2f_weight_tensor,
+            r2c_weight_tensor,
             r2o_weight_tensor,
 
             g->CreateTensorPlaceHolder(),       /*weight_c2i*/
