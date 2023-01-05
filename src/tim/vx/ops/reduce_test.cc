@@ -208,9 +208,9 @@ TEST(Reduce_max, NotKeepDims) {
   tim::vx::ShapeType input_shape({2, 3});
   tim::vx::ShapeType output_shape({3});
 
-  tim::vx::TensorSpec input_spec(tim::vx::DataType::FLOAT32, input_shape,
+  tim::vx::TensorSpec input_spec(tim::vx::DataType::FLOAT16, input_shape,
                                  tim::vx::TensorAttribute::INPUT);
-  tim::vx::TensorSpec output_spec(tim::vx::DataType::FLOAT32, output_shape,
+  tim::vx::TensorSpec output_spec(tim::vx::DataType::FLOAT16, output_shape,
                                   tim::vx::TensorAttribute::OUTPUT);
   auto input_tensor = graph->CreateTensor(input_spec);
   auto output_tensor = graph->CreateTensor(output_spec);
@@ -218,15 +218,15 @@ TEST(Reduce_max, NotKeepDims) {
   auto reduce_sum = graph->CreateOperation<tim::vx::ops::ReduceMax>(axis, false);
   (*reduce_sum).BindInputs({input_tensor}).BindOutputs({output_tensor});
 
-  std::vector<float> in_data = {-1.0f, -2.0f, 3.0f, 4.0f, 5.0f, -6.0f};
-  std::vector<float> golden = {-1.0f, 4.0f, 5.0f};
+  std::vector<int16_t> in_data = {-1, -2, 3, 4, 5, -6};
+  std::vector<int16_t> golden = {-1, 4, 5};
 
   EXPECT_TRUE(input_tensor->CopyDataToTensor(in_data.data(), in_data.size()));
 
   EXPECT_TRUE(graph->Compile());
   EXPECT_TRUE(graph->Run());
 
-  std::vector<float> output(golden.size());
+  std::vector<int16_t> output(golden.size());
   EXPECT_TRUE(output_tensor->CopyDataFromTensor(output.data()));
   EXPECT_EQ(golden, output);
 }
