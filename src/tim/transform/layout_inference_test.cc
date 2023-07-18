@@ -36,7 +36,8 @@ TEST(LayoutInference, simple_conv2d) {
       kernel_shape[0], tim::vx::PadType::AUTO,
       std::array<uint32_t, 2>({kernel_shape[2], kernel_shape[1]}),
       std::array<uint32_t, 2>({1, 1}), std::array<uint32_t, 2>({0, 0}),
-      std::array<uint32_t, 4>({0, 0, 0, 0}), 0, tim::vx::DataLayout::CWHN);
+      std::array<uint32_t, 4>({0, 0, 0, 0}), 0, tim::vx::DataLayout::CWHN,
+      tim::vx::DataLayout::IcWHOc);
   (*conv2d).BindInputs({input, kernel, bias}).BindOutput(output);
   // Do layout inference
   auto transform = tim::transform::LayoutInference(src_graph, ctx);
@@ -87,8 +88,7 @@ TEST(LayoutInference, weight_as_input_conv2d) {
   auto conv2d = src_graph->CreateOperation<tim::vx::ops::Conv2d>(
       0, tim::vx::PadType::AUTO, std::array<uint32_t, 2>({0, 0}),
       std::array<uint32_t, 2>({1, 1}), std::array<uint32_t, 2>({1, 1}),
-      std::array<uint32_t, 4>({0, 0, 0, 0}), 0, tim::vx::DataLayout::WHCN,
-      tim::vx::DataLayout::IcWHOc);
+      std::array<uint32_t, 4>({0, 0, 0, 0}), 0, tim::vx::DataLayout::WHCN);
   (*conv2d).BindInputs({input, kernel, bias}).BindOutput(output);
   // Do layout inference
   auto transform = tim::transform::LayoutInference(src_graph, ctx);
@@ -152,8 +152,7 @@ TEST(GroupedConv2d, kernel_bigger_than_input_SAME) {
   std::array<uint32_t, 2> dilations = {0, 0};
   std::array<uint32_t, 2> strides = {1, 1};
   auto op = src_graph->CreateOperation<tim::vx::ops::GroupedConv2d>(
-      tim::vx::PadType::SAME, strides, dilations, 2, tim::vx::DataLayout::WHCN,
-      tim::vx::DataLayout::IcWHOc);
+      tim::vx::PadType::SAME, strides, dilations, 2, tim::vx::DataLayout::WHCN);
   (*op).BindInputs({input_tensor, weight_tensor, bias_tensor}).BindOutputs({output_tensor});
 
   // Do layout inference
